@@ -1,5 +1,10 @@
 import React from "react";
-
+import data from "../data.json";
+import { DataTable } from "../components/data-table";
 export default function page() {
-  return <div>this it all user page</div>;
+  return (
+    <div>
+      <DataTable data={data} />
+    </div>
+  );
 }

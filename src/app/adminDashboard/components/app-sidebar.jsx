@@ -32,6 +32,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
+import { BanknoteArrowDown, Loader } from "lucide-react";
 
 const data = {
   user: {
@@ -48,12 +49,18 @@ const data = {
     {
       title: "All Users",
       url: "/adminDashboard/alluser",
-      icon: IconFolder,
+      icon: IconUsers,
     },
+
     {
       title: "All Donation Request",
-      url: "#",
-      icon: IconFolder,
+      url: "/adminDashboard/allDonationRequest",
+      icon: Loader,
+    },
+    {
+      title: "Fund Details",
+      url: "/adminDashboard/allDonationRequest",
+      icon: BanknoteArrowDown,
     },
     // {
     //   title: "Team",
