@@ -4,7 +4,9 @@ export default function Footer() {
       <div className="max-w-6xl 2xl:max-w-7xl mx-auto py-12">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-xl font-bold text-red-500 mb-4">BloodDonate</h3>
+            <h3 className="text-xl font-bold text-red-500 mb-4">
+              BloodLiink BD
+            </h3>
             <p className="text-gray-600">
               Connecting blood donors with recipients, making blood donation
               easier and more accessible.

@@ -28,7 +28,7 @@ export default function Hero() {
 
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
                 <Link
-                  href="/register"
+                  href="/registerDonor"
                   className="bg-red-600 text-white px-8 py-3 text-lg hover:bg-red-700 transition-colors"
                 >
                   Become a Donor

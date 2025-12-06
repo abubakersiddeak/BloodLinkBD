@@ -8,7 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { IconDotsVertical, IconSearch, IconX } from "@tabler/icons-react";
+import { IconDotsVertical, IconX } from "@tabler/icons-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -48,14 +48,8 @@ const columns = [
       />
     ),
   },
-  {
-    accessorKey: "name",
-    header: "Name",
-  },
-  {
-    accessorKey: "email",
-    header: "Email",
-  },
+  { accessorKey: "name", header: "Name" },
+  { accessorKey: "email", header: "Email" },
   {
     accessorKey: "bloodGroup",
     header: "Blood Group",
@@ -91,29 +85,30 @@ const columns = [
     cell: ({ row }) => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
+          <Button variant="ghost" className="h-8 w-8 p-0 cursor-pointer">
             <IconDotsVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          {/* Status Actions */}
           {row.original.status === "active" ? (
-            <DropdownMenuItem className="text-destructive">
+            <DropdownMenuItem className="text-destructive cursor-pointer">
               Block User
             </DropdownMenuItem>
           ) : (
-            <DropdownMenuItem className="text-green-600">
+            <DropdownMenuItem className="text-green-600 cursor-pointer">
               Unblock User
             </DropdownMenuItem>
           )}
-
-          {/* Role Actions */}
           {row.original.role === "donor" && (
-            <DropdownMenuItem>Make Volunteer</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              Make Volunteer
+            </DropdownMenuItem>
           )}
           {(row.original.role === "donor" ||
             row.original.role === "volunteer") && (
-            <DropdownMenuItem>Make Admin</DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer">
+              Make Admin
+            </DropdownMenuItem>
           )}
         </DropdownMenuContent>
       </DropdownMenu>
@@ -121,8 +116,8 @@ const columns = [
   },
 ];
 
-export function DataTable({ data: initialData }) {
-  const [data, setData] = React.useState(initialData);
+export function AllUserTable({ data: initialData }) {
+  const [data] = React.useState(initialData);
   const [sorting, setSorting] = React.useState([]);
   const [columnFilters, setColumnFilters] = React.useState([]);
   const [globalFilter, setGlobalFilter] = React.useState("");
@@ -131,10 +126,8 @@ export function DataTable({ data: initialData }) {
     pageSize: 10,
   });
 
-  // Status filter options
   const statusOptions = ["all", "active", "blocked"];
-
-  // Search fields
+  const roleOptions = ["all", "donor", "volunteer", "admin"];
   const searchFields = [
     { value: "all", label: "All Fields" },
     { value: "name", label: "Name" },
@@ -143,50 +136,49 @@ export function DataTable({ data: initialData }) {
   ];
 
   const [searchField, setSearchField] = React.useState("all");
-
-  // Debounced search value
   const [searchValue, setSearchValue] = React.useState("");
+
+  // Debounced search
   React.useEffect(() => {
-    const timer = setTimeout(() => {
-      setGlobalFilter(searchValue);
-    }, 300);
+    const timer = setTimeout(() => setGlobalFilter(searchValue), 300);
     return () => clearTimeout(timer);
   }, [searchValue]);
 
-  // Filter by status
+  // Handlers
   const handleStatusFilter = (status) => {
-    if (status === "all") {
-      setColumnFilters([]);
-    } else {
-      setColumnFilters([{ id: "status", value: status }]);
-    }
+    setColumnFilters((prev) => {
+      const others = prev.filter((f) => f.id !== "status");
+      return status === "all"
+        ? others
+        : [...others, { id: "status", value: status }];
+    });
+  };
+
+  const handleRoleFilter = (role) => {
+    setColumnFilters((prev) => {
+      const others = prev.filter((f) => f.id !== "role");
+      return role === "all" ? others : [...others, { id: "role", value: role }];
+    });
   };
 
   const table = useReactTable({
     data,
     columns,
-    state: {
-      sorting,
-      columnFilters,
-      globalFilter,
-      pagination,
-    },
+    state: { sorting, columnFilters, globalFilter, pagination },
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
     onPaginationChange: setPagination,
-    globalFilterFn: (row, columnId, filterValue) => {
-      const searchValue = filterValue.toLowerCase();
+    globalFilterFn: (row, _, filterValue) => {
+      const searchVal = filterValue.toLowerCase();
       if (searchField === "all") {
-        // Search in all searchable fields
-        return ["name", "email", "bloodGroup"].some((field) => {
-          const value = row.getValue(field)?.toLowerCase() || "";
-          return value.includes(searchValue);
-        });
+        return ["name", "email", "bloodGroup"].some((field) =>
+          (row.getValue(field)?.toLowerCase() || "").includes(searchVal)
+        );
       } else {
-        // Search in selected field
-        const value = row.getValue(searchField)?.toLowerCase() || "";
-        return value.includes(searchValue);
+        return (row.getValue(searchField)?.toLowerCase() || "").includes(
+          searchVal
+        );
       }
     },
     getCoreRowModel: getCoreRowModel(),
@@ -196,95 +188,139 @@ export function DataTable({ data: initialData }) {
   });
 
   return (
-    <div className="space-y-4">
-      {/* Filters and Search */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        {/* Status Filter */}
-        <div className="flex items-center gap-2">
-          <Select
-            value={columnFilters[0]?.value || "all"}
-            onValueChange={handleStatusFilter}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by status" />
-            </SelectTrigger>
-            <SelectContent>
-              {statusOptions.map((status) => (
-                <SelectItem key={status} value={status} className="capitalize">
-                  {status}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+    <div className="space-y-6">
+      {/* Filters + Search */}
+      <div className="flex flex-col space-y-4 md:space-y-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Status Filter */}
+          <div className="w-full">
+            <p className="text-xs text-gray-500 mb-1.5 px-1">
+              Filter by status
+            </p>
+            <Select
+              value={
+                columnFilters.find((f) => f.id === "status")?.value || "all"
+              }
+              onValueChange={handleStatusFilter}
+            >
+              <SelectTrigger className="w-full cursor-pointer hover:bg-accent">
+                <SelectValue placeholder="Filter by status" />
+              </SelectTrigger>
+              <SelectContent>
+                {statusOptions.map((s) => (
+                  <SelectItem
+                    key={s}
+                    value={s}
+                    className="capitalize cursor-pointer hover:bg-accent"
+                  >
+                    {s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-        {/* Search Section */}
-        <div className="flex flex-1 items-center gap-2 md:max-w-md">
-          <Select value={searchField} onValueChange={setSearchField}>
-            <SelectTrigger className="w-[130px]">
-              <SelectValue placeholder="Search in..." />
-            </SelectTrigger>
-            <SelectContent>
-              {searchFields.map((field) => (
-                <SelectItem key={field.value} value={field.value}>
-                  {field.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {/* Role Filter */}
+          <div className="w-full">
+            <p className="text-xs text-gray-500 mb-1.5 px-1">Filter by role</p>
+            <Select
+              value={columnFilters.find((f) => f.id === "role")?.value || "all"}
+              onValueChange={handleRoleFilter}
+            >
+              <SelectTrigger className="w-full cursor-pointer hover:bg-accent">
+                <SelectValue placeholder="Filter by role" />
+              </SelectTrigger>
+              <SelectContent>
+                {roleOptions.map((r) => (
+                  <SelectItem
+                    key={r}
+                    value={r}
+                    className="capitalize cursor-pointer hover:bg-accent"
+                  >
+                    {r}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-          <div className="relative flex-1">
-            <Input
-              placeholder={`Search ${
-                searchField === "all"
-                  ? "all fields"
-                  : searchFields
-                      .find((f) => f.value === searchField)
-                      ?.label.toLowerCase()
-              }...`}
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              className="pr-8"
-            />
-            {searchValue && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                onClick={() => setSearchValue("")}
-              >
-                <IconX className="h-4 w-4" />
-              </Button>
-            )}
+          {/* Search Section */}
+          <div className="w-full sm:col-span-2">
+            <p className="text-xs text-gray-500 mb-1.5 px-1">Search</p>
+            <div className="flex gap-2">
+              <Select value={searchField} onValueChange={setSearchField}>
+                <SelectTrigger className="w-[130px] cursor-pointer hover:bg-accent">
+                  <SelectValue placeholder="Search in..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {searchFields.map((f) => (
+                    <SelectItem
+                      key={f.value}
+                      value={f.value}
+                      className="cursor-pointer hover:bg-accent"
+                    >
+                      {f.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <div className="relative flex-1">
+                <Input
+                  placeholder={`Search ${
+                    searchField === "all"
+                      ? "all fields"
+                      : searchFields
+                          .find((f) => f.value === searchField)
+                          ?.label.toLowerCase()
+                  }...`}
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  className="w-full pr-8 cursor-text"
+                />
+                {searchValue && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="absolute right-0 top-0 h-full px-3 hover:bg-transparent cursor-pointer"
+                    onClick={() => setSearchValue("")}
+                  >
+                    <IconX className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Table */}
-      <div className="rounded-md border">
+      <div className="rounded-md border overflow-x-auto">
         <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
+          <TableHeader className="bg-muted/50">
+            {table.getHeaderGroups().map((hg) => (
+              <TableRow key={hg.id}>
+                {hg.headers.map((h) => (
+                  <TableHead
+                    key={h.id}
+                    className="whitespace-nowrap cursor-pointer hover:bg-accent/50"
+                  >
+                    {h.isPlaceholder
                       ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                      : flexRender(h.column.columnDef.header, h.getContext())}
                   </TableHead>
                 ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow
+                  key={row.id}
+                  className="hover:bg-accent/50 cursor-pointer"
+                >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="whitespace-nowrap">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -308,54 +344,60 @@ export function DataTable({ data: initialData }) {
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between px-2">
-        <div className="flex-1 text-sm text-muted-foreground">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
+        <div className="text-sm text-muted-foreground order-2 sm:order-1">
           {table.getFilteredRowModel().rows.length} user(s) total
         </div>
-        <div className="flex items-center space-x-6 lg:space-x-8">
-          <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium">Rows per page</p>
+
+        <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 order-1 sm:order-2">
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-medium whitespace-nowrap">
+              Rows per page
+            </p>
             <Select
               value={`${table.getState().pagination.pageSize}`}
-              onValueChange={(value) => {
-                table.setPageSize(Number(value));
-              }}
+              onValueChange={(v) => table.setPageSize(Number(v))}
             >
-              <SelectTrigger className="h-8 w-[70px]">
-                <SelectValue
-                  placeholder={table.getState().pagination.pageSize}
-                />
+              <SelectTrigger className="h-8 w-[70px] cursor-pointer hover:bg-accent">
+                <SelectValue />
               </SelectTrigger>
               <SelectContent side="top">
-                {[10, 20, 30, 40, 50].map((pageSize) => (
-                  <SelectItem key={pageSize} value={`${pageSize}`}>
-                    {pageSize}
+                {[10, 20, 30, 40, 50].map((n) => (
+                  <SelectItem
+                    key={n}
+                    value={`${n}`}
+                    className="cursor-pointer hover:bg-accent"
+                  >
+                    {n}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <span className="sr-only">Go to previous page</span>←
-            </Button>
-            <Button
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <span className="sr-only">Go to next page</span>→
-            </Button>
+
+          <div className="flex items-center gap-2">
+            <div className="text-sm font-medium">
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount()}
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                className="h-8 w-8 p-0 cursor-pointer hover:bg-accent"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                ←
+              </Button>
+              <Button
+                variant="outline"
+                className="h-8 w-8 p-0 cursor-pointer hover:bg-accent"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                →
+              </Button>
+            </div>
           </div>
         </div>
       </div>

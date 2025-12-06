@@ -59,7 +59,7 @@ const data = {
     },
     {
       title: "Fund Details",
-      url: "/adminDashboard/allDonationRequest",
+      url: "/adminDashboard/fundDetails",
       icon: BanknoteArrowDown,
     },
     // {

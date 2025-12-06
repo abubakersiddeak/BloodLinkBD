@@ -98,5 +98,25 @@
     "status": "active",
     "bloodGroup": "B+",
     "district": "San Jose"
+  },
+  {
+    "id": 11,
+    "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=William",
+    "name": "William Garcia",
+    "email": "william@example.com",
+    "role": "donor",
+    "status": "blocked",
+    "bloodGroup": "A+",
+    "district": "Dallas"
+  },
+  {
+    "id": 12,
+    "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=Ava",
+    "name": "Ava Rodriguez",
+    "email": "ava@example.com",
+    "role": "volunteer",
+    "status": "active",
+    "bloodGroup": "B+",
+    "district": "San Jose"
   }
 ]
