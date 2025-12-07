@@ -1,14 +1,59 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { User, LogOut, LayoutDashboard } from "lucide-react";
+import Swal from "sweetalert2";
+import useAuth from "@/hooks/useAuth";
+import server from "@/lib/api";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const { user } = useAuth();
+
+  const handleLogout = () => {
+    Swal.fire({
+      title: "Logout Confirmation",
+      text: "Are you sure you want to logout?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, Logout",
+      cancelButtonText: "Cancel",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        // Clear user data
+
+        const res = await server.post("/api/auth/logout");
+        // Cookie removed now
+        if (!res.ok) {
+          Swal.fire({
+            icon: "Faield",
+            title: "Something went wrong",
+            text: "Please Retry.",
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        }
+        Swal.fire({
+          icon: "success",
+          title: "Logged Out Successfully",
+          text: "You have been logged out.",
+          timer: 1500,
+          showConfirmButton: false,
+        }).then(() => {
+          window.location.href = "/";
+        });
+      }
+    });
+  };
 
   return (
     <nav className="bg-white shadow-sm fixed w-full top-0 z-50">
-      <div className="max-w-7xl mx-auto px-3 lg:px-0 ">
+      <div className="max-w-7xl mx-auto px-3 lg:px-0">
         <div className="flex justify-between items-center h-16">
           <Link
             href="/"
@@ -17,7 +62,7 @@ export default function Navbar() {
             <span className="text-2xl">
               <Image
                 src={"/bloodlinkLogo.webp"}
-                alt="blood logo "
+                alt="blood logo"
                 height={30}
                 width={30}
               />
@@ -39,12 +84,83 @@ export default function Navbar() {
             >
               Search Donors
             </Link>
-            <Link
-              href="/login"
-              className="bg-red-500 text-white px-4 py-2 hover:bg-red-600"
-            >
-              Login
-            </Link>
+
+            {user ? (
+              <>
+                {/* Dashboard Link */}
+                <Link
+                  href="/dashboard"
+                  className="text-gray-600 hover:text-red-500 px-3 py-2 flex items-center gap-2"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  Dashboard
+                </Link>
+
+                {/* User Profile Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-2 transition-colors"
+                  >
+                    <div className="w-8 h-8 bg-red-500 flex items-center justify-center text-white font-semibold">
+                      <Image
+                        src={user.avatar}
+                        alt="User"
+                        height={30}
+                        width={30}
+                      />
+                    </div>
+                    <span className="text-gray-700 font-medium">
+                      {user.name}
+                    </span>
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {isDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg">
+                      <div className="px-4 py-3 border-b border-gray-200">
+                        <p className="text-sm font-semibold text-gray-900">
+                          {user.name}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">
+                          {user.email}
+                        </p>
+                      </div>
+                      <Link
+                        href="/dashboard"
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <LayoutDashboard className="w-4 h-4" />
+                        Dashboard
+                      </Link>
+                      <Link
+                        href="/profile"
+                        className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <User className="w-4 h-4" />
+                        Profile
+                      </Link>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 border-t border-gray-200"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Logout
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="bg-red-500 text-white px-4 py-2 hover:bg-red-600"
+              >
+                Login
+              </Link>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -78,21 +194,76 @@ export default function Navbar() {
             <Link
               href="/donation-requests"
               className="block px-4 py-2 text-gray-600 hover:bg-gray-50"
+              onClick={() => setIsMenuOpen(false)}
             >
               Donation Requests
             </Link>
             <Link
               href="/search"
               className="block px-4 py-2 text-gray-600 hover:bg-gray-50"
+              onClick={() => setIsMenuOpen(false)}
             >
               Search Donors
             </Link>
-            <Link
-              href="/login"
-              className="block px-4 py-2 text-gray-600 hover:bg-gray-50"
-            >
-              Login
-            </Link>
+
+            {user ? (
+              <>
+                {/* User Info */}
+                <div className="px-4 py-3 bg-gray-50 border-y border-gray-200">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-red-500 flex items-center justify-center text-white font-semibold">
+                      <Image
+                        src={user.avatar}
+                        alt="User"
+                        height={30}
+                        width={30}
+                      />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">
+                        {user.name}
+                      </p>
+                      <p className="text-xs text-gray-500">{user.email}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <Link
+                  href="/dashboard"
+                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-50"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  Dashboard
+                </Link>
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-50"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <User className="w-4 h-4" />
+                  Profile
+                </Link>
+                <button
+                  onClick={() => {
+                    setIsMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full flex items-center gap-2 px-4 py-2 text-red-600 hover:bg-red-50 border-t border-gray-200"
+                >
+                  <LogOut className="w-4 h-4" />
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="block px-4 py-2 text-gray-600 hover:bg-gray-50"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Login
+              </Link>
+            )}
           </div>
         )}
       </div>

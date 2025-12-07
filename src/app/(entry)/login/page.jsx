@@ -86,7 +86,7 @@ export default function Page() {
         console.error("Login Error:", error);
 
         // Determine error message
-        let errorMessage = "Login failed. Please try again.";
+        let errorMessage = "Gmail or Password not valid.";
         let errorTitle = "Login Failed";
 
         if (error.response) {
