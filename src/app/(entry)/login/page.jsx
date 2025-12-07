@@ -55,7 +55,7 @@ const FormInput = ({
   </div>
 );
 
-const Page = () => {
+export default function Page() {
   const {
     register,
     handleSubmit,
@@ -304,6 +304,4 @@ const Page = () => {
       <Footer />
     </div>
   );
-};
-
-export default Page;
+}
