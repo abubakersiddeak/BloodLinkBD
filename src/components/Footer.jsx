@@ -5,7 +5,7 @@ export default function Footer() {
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <h3 className="text-xl font-bold text-red-500 mb-4">
-              BloodLiink BD
+              BloodLink BD
             </h3>
             <p className="text-gray-600">
               Connecting blood donors with recipients, making blood donation

@@ -19,6 +19,7 @@ import FormInput from "@/components/FormInput";
 import FormSelect from "@/components/FormSelect";
 import server from "@/lib/api";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 // Constants moved outside component to prevent recreation
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
@@ -160,8 +161,8 @@ const AvatarUpload = ({
             <Image
               src={previewImage}
               alt="Preview"
-              height={50}
-              width={50}
+              height={96}
+              width={96}
               className="w-full h-full object-cover"
             />
           ) : (
@@ -207,7 +208,7 @@ const AvatarUpload = ({
 
       {error && <p className="mt-2 text-red-500 text-xs">{error}</p>}
       <p className="text-gray-500 text-xs mt-2">
-        Click avatar or camera icon to upload
+        Click avatar or camera icon to upload (Optional)
       </p>
       <p className="text-gray-400 text-xs">Max 5MB (JPG, PNG, GIF, WebP)</p>
     </div>
@@ -262,12 +263,24 @@ export default function Page() {
     const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
     if (!allowedTypes.includes(file.type)) {
       setAvatarError("Please upload a valid image (JPG, PNG, GIF, WebP)");
+      Swal.fire({
+        icon: "error",
+        title: "Invalid File Type",
+        text: "Please upload a valid image (JPG, PNG, GIF, WebP)",
+        confirmButtonColor: "#dc2626",
+      });
       return;
     }
 
     // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
       setAvatarError("File size should be less than 5MB");
+      Swal.fire({
+        icon: "error",
+        title: "File Too Large",
+        text: "File size should be less than 5MB",
+        confirmButtonColor: "#dc2626",
+      });
       return;
     }
 
@@ -296,31 +309,70 @@ export default function Page() {
 
   const onSubmit = useCallback(
     async (data) => {
-      // Validate avatar
-      if (!avatarFile) {
-        setAvatarError("Profile picture is required");
-        return;
-      }
-
       try {
         setLoading(true);
 
-        //  Upload image to ImgBB
-        const imageFormData = new FormData();
-        imageFormData.append("image", avatarFile);
+        let imageUrl = null;
 
-        const imageBBapiUrl = `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_HOST_KEY}`;
-        const imgbbRes = await axios.post(imageBBapiUrl, imageFormData);
+        // Only upload image if user has selected one
+        if (avatarFile) {
+          try {
+            // Show uploading image alert
+            Swal.fire({
+              title: "Uploading Image...",
+              text: "Please wait while we upload your profile picture",
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
 
-        // Check if upload was successful
-        if (!imgbbRes.data.success) {
-          setAvatarError("Failed to upload image. Please try again.");
-          return;
+            const imageFormData = new FormData();
+            imageFormData.append("image", avatarFile);
+
+            const imageBBapiUrl = `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_HOST_KEY}`;
+            const imgbbRes = await axios.post(imageBBapiUrl, imageFormData);
+
+            // Check if upload was successful
+            if (!imgbbRes.data.success) {
+              setAvatarError("Failed to upload image. Please try again.");
+              Swal.fire({
+                icon: "error",
+                title: "Upload Failed",
+                text: "Failed to upload image. Please try again.",
+                confirmButtonColor: "#dc2626",
+              });
+              setLoading(false);
+              return;
+            }
+
+            imageUrl = imgbbRes.data.data.display_url;
+            Swal.close(); // Close the loading alert
+          } catch (imageError) {
+            console.error("Image upload error:", imageError);
+            setAvatarError("Failed to upload image. Please try again.");
+            Swal.fire({
+              icon: "error",
+              title: "Upload Error",
+              text: "Failed to upload image. Please try again.",
+              confirmButtonColor: "#dc2626",
+            });
+            setLoading(false);
+            return;
+          }
         }
 
-        const imageUrl = imgbbRes.data.data.display_url;
+        // Show registering alert
+        Swal.fire({
+          title: "Registering...",
+          text: "Please wait while we create your account",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
 
-        // Send JSON data to server
+        // Send JSON data to server (with or without avatar)
         const userData = {
           name: data.fullName,
           email: data.email,
@@ -329,7 +381,7 @@ export default function Page() {
           district: data.district,
           upazila: data.upazila,
           password: data.password,
-          avatar: imageUrl,
+          ...(imageUrl && { avatar: imageUrl }), // Only include avatar if it exists
         };
 
         console.log("Sending to server:", userData);
@@ -347,23 +399,46 @@ export default function Page() {
         reset();
         setPreviewImage(null);
         setAvatarFile(null);
+        setAvatarError(null);
         setShowPassword(false);
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
-        alert("Registration successful!");
+
+        // Show success message
+        Swal.fire({
+          icon: "success",
+          title: "Registration Successful!",
+          html: `
+            <p class="text-gray-600">Welcome to our blood donation community!</p>
+            <p class="text-sm text-gray-500 mt-2">You can now login with your credentials.</p>
+          `,
+          confirmButtonText: "Go to Home",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Redirect to login page
+            window.location.href = "/";
+          }
+        });
       } catch (error) {
         console.error("Error:", error);
-        alert(
-          error.response?.data?.message ||
-            "Registration failed. Please try again."
-        );
+
+        // Show error message
+        Swal.fire({
+          icon: "error",
+          title: "Registration Failed",
+          text:
+            error.response?.data?.message ||
+            "Registration failed. Please try again.",
+          confirmButtonColor: "#dc2626",
+        });
       } finally {
         setLoading(false);
       }
     },
     [reset, avatarFile]
   );
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
