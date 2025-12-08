@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function Hero() {
   return (
@@ -66,8 +67,12 @@ export default function Hero() {
               className="hidden md:block"
             >
               <div className="relative">
-                <img
-                  src="https://ichef.bbci.co.uk/news/480/cpsprodpb/3c41/live/4914eb10-c6c5-11f0-82b1-6148fee2770d.jpg.webp"
+                <Image
+                  height={500}
+                  width={500}
+                  src={
+                    "https://i.ibb.co.com/yBGfjN6r/photo-1615461066159-fea0960485d5.jpg"
+                  }
                   alt="Blood Donation"
                   className="w-full h-[500px] object-cover border-8 border-white shadow-lg"
                 />

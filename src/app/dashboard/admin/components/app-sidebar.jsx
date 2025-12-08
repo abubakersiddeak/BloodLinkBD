@@ -19,9 +19,6 @@ import {
   IconUsers,
 } from "@tabler/icons-react";
 
-import { NavMain } from "@/app/adminDashboard/components/nav-main";
-import { NavSecondary } from "@/app/adminDashboard/components/nav-secondary";
-import { NavUser } from "@/app/adminDashboard/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -33,6 +30,10 @@ import {
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 import { BanknoteArrowDown, Loader } from "lucide-react";
+import { NavMain } from "./nav-main";
+import { NavSecondary } from "./nav-secondary";
+import { NavUser } from "./nav-user";
+import Link from "next/link";
 
 const data = {
   user: {
@@ -43,23 +44,23 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/adminDashboard",
+      url: "/dashboard/admin",
       icon: IconDashboard,
     },
     {
       title: "All Users",
-      url: "/adminDashboard/alluser",
+      url: "/dashboard/admin/alluser",
       icon: IconUsers,
     },
 
     {
       title: "All Donation Request",
-      url: "/adminDashboard/allDonationRequest",
+      url: "/dashboard/admin/allDonationRequest",
       icon: Loader,
     },
     {
       title: "Fund Details",
-      url: "/adminDashboard/fundDetails",
+      url: "/dashboard/admin/fundDetails",
       icon: BanknoteArrowDown,
     },
     // {
@@ -167,7 +168,7 @@ export function AppSidebar({ ...props }) {
               asChild
               className="data-[slot=sidebar-menu-button]:p-1.5!"
             >
-              <a href="#">
+              <Link href="/">
                 <Image
                   src={"/bloodlinkLogo.webp"}
                   alt="Icon"
@@ -177,7 +178,7 @@ export function AppSidebar({ ...props }) {
                 <span className="text-2xl font-bold text-red-500">
                   BloodLink BD
                 </span>
-              </a>
+              </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

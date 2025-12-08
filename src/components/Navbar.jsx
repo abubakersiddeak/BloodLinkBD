@@ -100,14 +100,15 @@ export default function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-2 transition-colors"
+                    className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-3 py-2 transition-colors cursor-pointer"
                   >
-                    <div className="w-8 h-8 bg-red-500 flex items-center justify-center text-white font-semibold">
+                    <div className="w-8 h-8 border-red-500 border relative overflow-hidden flex items-center justify-center text-white font-semibold">
                       <Image
                         src={user.avatar}
                         alt="User"
-                        height={30}
-                        width={30}
+                        height={500}
+                        width={500}
+                        objectFit="cover"
                       />
                     </div>
                     <span className="text-gray-700 font-medium">
@@ -144,7 +145,7 @@ export default function Navbar() {
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 border-t border-gray-200"
+                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer border-t border-gray-200"
                       >
                         <LogOut className="w-4 h-4" />
                         Logout
