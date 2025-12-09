@@ -19,38 +19,45 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import FormInput from "./FormInput";
 import server from "@/lib/api";
+import districtData from "../data/district.json";
+import upazilaData from "../data/upazila.json";
 
 const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
-
-const districts = [
-  "Dhaka",
-  "Chittagong",
-  "Rajshahi",
-  "Khulna",
-  "Sylhet",
-  "Barisal",
-  "Rangpur",
-  "Mymensingh",
-];
 
 export default function CreateBloodReq() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-
+  const [upazilas, setUpazilas] = useState([]);
   const {
     register,
     reset,
+    watch,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
+
+  const selectedDistrict = watch("district");
+  const handleDistrictChange = (e) => {
+    const districtId = e.target.value;
+
+    // Upazila filter
+    const filteredUpazilas = upazilaData.filter(
+      (upa) => upa.district_id === districtId
+    );
+    setUpazilas(filteredUpazilas);
+
+    // Clear previous upazila selection
+    setValue("upazila", "");
+  };
 
   const onSubmit = async (data) => {
     setLoading(true);
 
     try {
       const fullAddress = {
-        district: data.district,
-        upazila: data.upazila,
+        district: districtData.find((d) => d.id === data.district)?.name || "",
+        upazila: upazilas.find((u) => u.id === data.upazila)?.name || "",
         streetAddress: data.streetAddress,
       };
 
@@ -256,12 +263,13 @@ export default function CreateBloodReq() {
                     <label className="text-sm mb-1 block">District *</label>
                     <select
                       {...register("district", { required: "Required" })}
+                      onChange={handleDistrictChange}
                       className="w-full p-2 border border-gray-300 text-sm"
                     >
                       <option value="">Select District</option>
-                      {districts.map((d) => (
-                        <option key={d} value={d}>
-                          {d}
+                      {districtData.map((d) => (
+                        <option key={d.id} value={d.id}>
+                          {d.name}
                         </option>
                       ))}
                     </select>
@@ -271,16 +279,26 @@ export default function CreateBloodReq() {
                       </p>
                     )}
                   </div>
-
-                  <FormInput
-                    id="upazila"
-                    label="Upazila"
-                    icon={IconMapPin}
-                    placeholder="e.g., Mirpur"
-                    register={register}
-                    error={errors.upazila}
-                    validation={{ required: "Required" }}
-                  />
+                  {/* Upazila */}
+                  <div>
+                    <label className="block mb-1 text-sm">Upazila *</label>
+                    <select
+                      {...register("upazila", { required: "Required" })}
+                      className="w-full p-2 border border-gray-300"
+                    >
+                      <option value="">Select Upazila</option>
+                      {upazilas.map((u) => (
+                        <option key={u.id} value={u.id}>
+                          {u.name}
+                        </option>
+                      ))}
+                    </select>
+                    {errors.upazila && (
+                      <p className="text-xs text-red-500">
+                        {errors.upazila.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 <FormInput

@@ -20,105 +20,23 @@ import FormSelect from "@/components/FormSelect";
 import server from "@/lib/api";
 import axios from "axios";
 import Swal from "sweetalert2";
+import districtData from "../../../data/district.json";
+import upazilaData from "../../../data/upazila.json";
 
 // Constants moved outside component to prevent recreation
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
-const DISTRICTS_WITH_UPAZILAS = {
-  Dhaka: [
-    "Dhamrai",
-    "Dohar",
-    "Keraniganj",
-    "Nawabganj",
-    "Savar",
-    "Tejgaon",
-    "Gulshan",
-    "Mirpur",
-    "Mohammadpur",
-    "Uttara",
-  ],
-  Chittagong: [
-    "Anwara",
-    "Banshkhali",
-    "Boalkhali",
-    "Chandanaish",
-    "Fatikchhari",
-    "Hathazari",
-    "Lohagara",
-    "Mirsharai",
-    "Patiya",
-    "Rangunia",
-  ],
-  Rajshahi: [
-    "Bagha",
-    "Bagmara",
-    "Charghat",
-    "Durgapur",
-    "Godagari",
-    "Mohanpur",
-    "Paba",
-    "Puthia",
-    "Tanore",
-  ],
-  Khulna: [
-    "Batiaghata",
-    "Dacope",
-    "Daulatpur",
-    "Dighalia",
-    "Dumuria",
-    "Khalishpur",
-    "Khan Jahan Ali",
-    "Koyra",
-    "Paikgachha",
-    "Rupsa",
-  ],
-  Sylhet: [
-    "Balaganj",
-    "Beanibazar",
-    "Bishwanath",
-    "Companiganj",
-    "Fenchuganj",
-    "Golapganj",
-    "Gowainghat",
-    "Jaintiapur",
-    "Kanaighat",
-    "Zakiganj",
-  ],
-  Barishal: [
-    "Agailjhara",
-    "Babuganj",
-    "Bakerganj",
-    "Banaripara",
-    "Gaurnadi",
-    "Hizla",
-    "Mehendiganj",
-    "Muladi",
-    "Wazirpur",
-  ],
-  Rangpur: [
-    "Badarganj",
-    "Gangachara",
-    "Kaunia",
-    "Mithapukur",
-    "Pirgachha",
-    "Pirganj",
-    "Rangpur Sadar",
-    "Taraganj",
-  ],
-  Mymensingh: [
-    "Bhaluka",
-    "Dhobaura",
-    "Fulbaria",
-    "Gaffargaon",
-    "Gauripur",
-    "Haluaghat",
-    "Ishwarganj",
-    "Muktagachha",
-    "Mymensingh Sadar",
-    "Nandail",
-  ],
-};
+const DISTRICTS_WITH_UPAZILAS = {};
+districtData.forEach((district) => {
+  const districtName = district.name;
 
+  const upazilas = upazilaData
+    .filter((upa) => upa.district_id === district.id)
+    .map((upa) => upa.name);
+
+  DISTRICTS_WITH_UPAZILAS[districtName] = upazilas;
+});
+console.log(DISTRICTS_WITH_UPAZILAS);
 const DISTRICTS = Object.keys(DISTRICTS_WITH_UPAZILAS);
 
 // Avatar Upload Component
