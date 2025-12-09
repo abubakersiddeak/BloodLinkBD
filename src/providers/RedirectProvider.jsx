@@ -3,6 +3,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
+import Loading from "@/components/Loading";
 
 export default function RedirectProvider({ children }) {
   const { user, loading } = useAuth();
@@ -24,8 +25,7 @@ export default function RedirectProvider({ children }) {
     }
   }, [user, loading, router]);
 
-  if (loading || !user)
-    return <p className="text-center mt-10">Checking access...</p>;
+  if (loading || !user) return <Loading />;
 
   return <>{children}</>;
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import Loading from "@/components/Loading";
+
 export default function Page() {
-  return <p className="text-center mt-10">dashboard access</p>;
+  return <Loading />;
 }
