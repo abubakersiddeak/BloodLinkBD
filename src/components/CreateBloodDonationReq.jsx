@@ -39,6 +39,7 @@ export default function CreateBloodReq() {
 
   const {
     register,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm();
@@ -58,6 +59,7 @@ export default function CreateBloodReq() {
       const res = await server.post("/api/bloodDonationReq/create", payload);
 
       if (res.data.success) {
+        reset();
         Swal.fire({
           icon: "success",
           title: "Request Created!",

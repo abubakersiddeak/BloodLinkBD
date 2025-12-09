@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import WhyDonateBlood from "@/components/WhyDonateBlood";
 import DonationProcess from "@/components/DonationProcess";
 import useAuth from "@/hooks/useAuth";
+import ShowDonationReq from "@/components/ShowDonationReq";
 
 export default function Home() {
   const { user } = useAuth();
@@ -13,6 +14,7 @@ export default function Home() {
     <div>
       <Navbar />
       <Hero />
+      <ShowDonationReq />
       <WhyDonateBlood />
       <DonationProcess />
       <Footer />
