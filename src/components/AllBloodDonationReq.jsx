@@ -312,17 +312,6 @@ export default function AllBloodDonationReq() {
                 />
                 Refresh
               </Button>
-
-              <Button
-                onClick={() =>
-                  router.push("/dashboard/admin/createBloodDonationRequest")
-                }
-                className="bg-red-600 hover:bg-red-700 cursor-pointer"
-                size="sm"
-              >
-                <IconDroplet className="h-4 w-4 mr-1.5" />
-                New Request
-              </Button>
             </div>
           </div>
 
@@ -530,7 +519,7 @@ export default function AllBloodDonationReq() {
                   key={req._id}
                   className="border-l-4 border-l-red-500 cursor-pointer hover:shadow-lg transition-all"
                   onClick={() =>
-                    router.push(`/dashboard/admin/bloodDonation-req/${req._id}`)
+                    router.push(`/dashboard/bloodDonation-req/${req._id}`)
                   }
                 >
                   <CardContent className="p-4">
@@ -570,9 +559,7 @@ export default function AllBloodDonationReq() {
                         size="sm"
                         variant="outline"
                         onClick={() =>
-                          router.push(
-                            `/dashboard/admin/bloodDonation-req/${req._id}`
-                          )
+                          router.push(`/dashboard/bloodDonation-req/${req._id}`)
                         }
                         className="flex-1 cursor-pointer"
                       >
@@ -586,7 +573,7 @@ export default function AllBloodDonationReq() {
                           variant="outline"
                           onClick={() =>
                             router.push(
-                              `/dashboard/admin/bloodDonation-req/${req._id}/edit`
+                              `/dashboard/bloodDonation-req/${req._id}/edit`
                             )
                           }
                           className="flex-1 cursor-pointer"
@@ -677,9 +664,7 @@ export default function AllBloodDonationReq() {
                           index % 2 === 0 ? "bg-white" : "bg-gray-50/50"
                         }`}
                         onClick={() =>
-                          router.push(
-                            `/dashboard/admin/bloodDonation-req/${req._id}`
-                          )
+                          router.push(`/dashboard/bloodDonation-req/${req._id}`)
                         }
                       >
                         <td className="p-3">
@@ -743,7 +728,7 @@ export default function AllBloodDonationReq() {
                               title="View Details"
                               onClick={() =>
                                 router.push(
-                                  `/dashboard/admin/bloodDonation-req/${req._id}`
+                                  `/dashboard/bloodDonation-req/${req._id}`
                                 )
                               }
                               className="cursor-pointer"
