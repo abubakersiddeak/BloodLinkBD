@@ -93,7 +93,7 @@ export default function ShowDonationReq() {
 
   return (
     <section className="bg-white min-h-screen py-12 md:py-20">
-      <div className="max-w-7xl px-4 2xl:px-0 mx-auto">
+      <div className="max-w-7xl px-3 lg:px-3 2xl:px-0 mx-auto">
         {/* --- Header & Search Section --- */}
         <div className="mb-12 space-y-8">
           <div className="border-b border-black/10 pb-6">

@@ -4,7 +4,7 @@ import React from "react";
 export default function DonationProcess() {
   return (
     <section className="py-20 bg-gray-50">
-      <div className="max-w-6xl 2xl:max-w-7xl mx-auto">
+      <div className="max-w-7xl px-3 lg:px-3 2xl:px-0 2xl:max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
             Simple Donation Process
