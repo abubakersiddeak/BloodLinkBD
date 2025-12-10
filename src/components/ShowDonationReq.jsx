@@ -95,74 +95,18 @@ export default function ShowDonationReq() {
     <section className="bg-white min-h-screen py-12 md:py-20">
       <div className="max-w-7xl px-3 lg:px-3 2xl:px-0 mx-auto">
         {/* --- Header & Search Section --- */}
-        <div className="mb-12 space-y-8">
-          <div className="border-b border-black/10 pb-6">
-            <h2 className="text-2xl md:text-4xl font-bold text-black uppercase tracking-tight">
-              Urgent Requests
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 md:mb-10 border-b border-gray-200 pb-6 gap-4">
+          <div className="max-w-lg">
+            <div className="inline-block bg-black text-white text-[10px] font-bold uppercase tracking-widest px-2 py-1 mb-3">
+              Urgent
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-black tracking-tight">
+              Urgent <span className="text-red-600">Requests</span>
             </h2>
-            <p className="text-gray-500 mt-2 text-sm md:text-base max-w-2xl">
-              Direct donor-to-patient connections.
-            </p>
           </div>
-
-          {/* Filter Bar */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="relative group">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black">
-                <Search size={18} />
-              </div>
-              <input
-                type="text"
-                name="search"
-                value={filters.search}
-                onChange={handleFilterChange}
-                placeholder="Search name, hospital..."
-                className="w-full h-12 pl-12 pr-4 bg-white border border-gray-300 text-black placeholder:text-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all rounded-none"
-              />
-            </div>
-
-            <div className="relative group">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black">
-                <MapPin size={18} />
-              </div>
-              <input
-                type="text"
-                name="district"
-                value={filters.district}
-                onChange={handleFilterChange}
-                placeholder="District (e.g. Dhaka)"
-                className="w-full h-12 pl-12 pr-4 bg-white border border-gray-300 text-black placeholder:text-gray-400 focus:outline-none focus:border-black focus:ring-1 focus:ring-black transition-all rounded-none"
-              />
-            </div>
-
-            <div className="relative">
-              <select
-                name="bloodGroup"
-                value={filters.bloodGroup}
-                onChange={handleFilterChange}
-                className="w-full h-12 pl-4 pr-10 bg-white border border-gray-300 text-black appearance-none focus:outline-none focus:border-black focus:ring-1 focus:ring-black rounded-none cursor-pointer"
-              >
-                <option value="all">All Blood Groups</option>
-                {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(
-                  (bg) => (
-                    <option key={bg} value={bg}>
-                      {bg}
-                    </option>
-                  )
-                )}
-              </select>
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                <Droplet size={18} />
-              </div>
-            </div>
-
-            <button
-              onClick={resetFilters}
-              className="h-12 cursor-pointer bg-gray-100 hover:bg-black hover:text-white border border-gray-300 hover:border-black text-black font-bold uppercase tracking-wide transition-colors flex items-center justify-center gap-2 rounded-none"
-            >
-              <RotateCcw size={18} /> Reset
-            </button>
-          </div>
+          <p className="text-xs md:text-sm text-gray-500 font-medium">
+            Direct donor-to-patient connections.
+          </p>
         </div>
 
         {/* --- Loading State --- */}
@@ -188,7 +132,7 @@ export default function ShowDonationReq() {
             </div>
 
             {/* --- Pagination Controls --- */}
-            <div className="flex flex-col md:flex-row items-center justify-between border-t border-gray-200 pt-8 gap-4">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <p className="text-sm text-gray-500 font-medium">
                 Showing page{" "}
                 <span className="text-black font-bold">{page}</span> of{" "}

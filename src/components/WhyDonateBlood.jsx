@@ -6,9 +6,8 @@ import {
   Activity,
   Users,
   AlertCircle,
-  ArrowRight,
   Check,
-  Info,
+  Droplet,
   Shield,
 } from "lucide-react";
 
@@ -17,334 +16,227 @@ export default function WhyDonateBlood() {
     {
       icon: Activity,
       title: "Emergency Care",
-      description: "Blood is essential for surgeries and emergency treatments",
-      color: "bg-red-600",
+      description: "Vital for surgeries & trauma patients.",
       stats: "24/7 Need",
     },
     {
       icon: Heart,
       title: "Cancer Treatment",
-      description: "Cancer patients may need blood daily during chemotherapy",
-      color: "bg-black",
-      stats: "Daily Support",
+      description: "Daily support for chemotherapy patients.",
+      stats: "Daily",
     },
     {
       icon: AlertCircle,
       title: "Accident Victims",
-      description: "A single car accident victim can require up to 100 units",
-      color: "bg-red-600",
-      stats: "100 Units",
+      description: "One victim can need 100+ units.",
+      stats: "Critical",
     },
   ];
 
   const bloodCompatibility = [
     {
-      type: "A+",
-      canGiveTo: "A+, AB+",
-      canReceiveFrom: "A+, A-, O+, O-",
-      percentage: "35.7%",
+      type: "O-",
+      label: "Univ. Donor",
+      give: "All",
+      receive: "O-",
+      highlight: true,
     },
-    {
-      type: "O+",
-      canGiveTo: "O+, A+, B+, AB+",
-      canReceiveFrom: "O+, O-",
-      percentage: "37.4%",
-    },
+    { type: "O+", label: "Common", give: "O+, A+, B+, AB+", receive: "O+, O-" },
+    { type: "A+", label: "Common", give: "A+, AB+", receive: "A+, A-, O+, O-" },
+    { type: "A-", label: "Rare", give: "A+, A-, AB+, AB-", receive: "A-, O-" },
     {
       type: "B+",
-      canGiveTo: "B+, AB+",
-      canReceiveFrom: "B+, B-, O+, O-",
-      percentage: "8.5%",
-    },
-    {
-      type: "AB+",
-      canGiveTo: "AB+",
-      canReceiveFrom: "All Types",
-      percentage: "3.4%",
-    },
-    {
-      type: "A-",
-      canGiveTo: "A+, A-, AB+, AB-",
-      canReceiveFrom: "A-, O-",
-      percentage: "6.3%",
-    },
-    {
-      type: "O-",
-      canGiveTo: "All Types",
-      canReceiveFrom: "O-",
-      percentage: "6.6%",
+      label: "Moderate",
+      give: "B+, AB+",
+      receive: "B+, B-, O+, O-",
     },
     {
       type: "B-",
-      canGiveTo: "B+, B-, AB+, AB-",
-      canReceiveFrom: "B-, O-",
-      percentage: "1.5%",
+      label: "Very Rare",
+      give: "B+, B-, AB+, AB-",
+      receive: "B-, O-",
+    },
+    {
+      type: "AB+",
+      label: "Univ. Recv",
+      give: "AB+",
+      receive: "All",
+      highlight: true,
     },
     {
       type: "AB-",
-      canGiveTo: "AB+, AB-",
-      canReceiveFrom: "AB-, A-, B-, O-",
-      percentage: "0.6%",
+      label: "Rarest",
+      give: "AB+, AB-",
+      receive: "AB-, A-, B-, O-",
     },
   ];
 
-  const didYouKnow = [
-    "Every 2 seconds someone needs blood worldwide",
-    "One donation can save up to three lives",
-    "Less than 38% of population is eligible to donate",
-    "Blood cannot be manufactured - only donated",
-  ];
-
-  const requirements = [
-    "Be at least 17 years old (16 with consent)",
-    "Weigh at least 110 pounds (50 kg)",
-    "Be in good general health condition",
-    "Not donated blood in last 56 days",
-  ];
-
   return (
-    <section className="py-8 md:py-12 lg:py-20 bg-gray-50">
-      <div className="max-w-7xl px-4 md:px-6 lg:px-3 2xl:px-0 mx-auto">
-        {/* Header */}
-        <div className="mb-8 md:mb-12 border-b border-black/10 pb-4 md:pb-6">
-          <h2 className="text-xl md:text-3xl lg:text-4xl font-bold text-black uppercase tracking-tight text-center md:text-left">
-            Why Donate Blood?
-          </h2>
-          <p className="text-gray-500 mt-2 text-xs md:text-sm lg:text-base max-w-2xl mx-auto md:mx-0 text-center md:text-left">
-            Your blood donation can help patients in need, from cancer treatment
-            to traumatic injuries.
-          </p>
-        </div>
+    <section className="py-12 bg-white font-sans text-gray-900 border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-3 lg:px-3 2xl:px-0">
+        {/* --- Header & 3 Pillars (Combined Compact Grid) --- */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-0 border border-gray-200 mb-8">
+          {/* Header Block */}
+          <div className="lg:col-span-1 p-6 md:p-8 border-b lg:border-b-0 lg:border-r border-gray-200 bg-gray-50 flex flex-col justify-center">
+            <h2 className="text-3xl font-bold tracking-tight text-black mb-3">
+              Why <span className="text-red-600">Donate?</span>
+            </h2>
+            <p className="text-sm text-gray-600 leading-relaxed mb-4">
+              There is no substitute for human blood. Your donation is the only
+              way to save these lives.
+            </p>
+            <div className="text-xs font-bold uppercase tracking-widest text-red-600 flex items-center gap-2">
+              <Droplet size={14} className="fill-current" /> Essential Care
+            </div>
+          </div>
 
-        {/* Main Reasons Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12 lg:mb-16">
+          {/* Pillars Blocks */}
           {reasons.map((item, index) => {
-            const IconComponent = item.icon;
+            const Icon = item.icon;
             return (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white border border-gray-200 hover:border-black transition-colors group"
+                className="group p-6 md:p-8 border-b lg:border-b-0 lg:border-r border-gray-200 last:border-r-0 hover:bg-gray-50 transition-colors"
               >
-                {/* Icon Header */}
-                <div
-                  className={`${item.color} text-white p-4 md:p-6 border-b border-gray-200 flex items-center justify-between`}
-                >
-                  <div className="bg-white/20 p-2 md:p-3">
-                    <IconComponent size={24} className="md:w-8 md:h-8" />
-                  </div>
-                  <span className="text-xs md:text-sm font-bold uppercase tracking-wider">
+                <div className="flex justify-between items-start mb-4">
+                  <Icon
+                    size={24}
+                    className="text-gray-400 group-hover:text-red-600 transition-colors"
+                  />
+                  <span className="text-[10px] font-bold uppercase bg-black text-white px-1.5 py-0.5">
                     {item.stats}
                   </span>
                 </div>
-
-                {/* Content */}
-                <div className="p-4 md:p-6">
-                  <h3 className="text-base md:text-lg lg:text-xl font-bold text-black mb-2 md:mb-3 uppercase">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-600 text-xs md:text-sm leading-relaxed">
-                    {item.description}
-                  </p>
-                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-xs text-gray-500 leading-relaxed">
+                  {item.description}
+                </p>
               </motion.div>
             );
           })}
         </div>
 
-        {/* Blood Type Compatibility Chart */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-white border border-gray-200 mb-8 md:mb-12 lg:mb-16"
-        >
-          <div className="bg-black text-white p-4 md:p-6 border-b border-gray-200">
-            <h3 className="text-base md:text-lg lg:text-2xl font-bold uppercase tracking-wide flex items-center gap-2 md:gap-3">
-              <Users size={20} className="md:w-6 md:h-6" />
-              Blood Type Compatibility Chart
+        {/* --- Compatibility Chart (Tight Grid) --- */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4 px-1">
+            <h3 className="text-lg font-bold text-black flex items-center gap-2">
+              <Users size={18} className="text-red-600" /> Compatibility
             </h3>
-            <p className="text-gray-300 text-xs md:text-sm mt-2">
-              Universal donor: O- | Universal recipient: AB+
-            </p>
+            <span className="text-xs text-gray-400 uppercase tracking-widest hidden sm:inline-block">
+              Find your match
+            </span>
           </div>
 
-          <div className="p-4 md:p-6 lg:p-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
-              {bloodCompatibility.map((blood, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.05 }}
-                  className="border border-gray-200 hover:border-red-600 transition-colors group"
-                >
-                  {/* Blood Type Header */}
-                  <div className="bg-red-600 text-white p-3 md:p-4 text-center border-b border-gray-200">
-                    <div className="text-xl md:text-2xl lg:text-3xl font-bold">
-                      {blood.type}
-                    </div>
-                    <div className="text-[10px] md:text-xs text-red-100 mt-1">
-                      {blood.percentage} Population
-                    </div>
-                  </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-px bg-gray-200 border border-gray-200">
+            {bloodCompatibility.map((blood, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                className={`p-4 flex flex-col justify-between h-32 hover:relative hover:z-10 hover:shadow-lg transition-all ${
+                  blood.highlight
+                    ? "bg-black text-white"
+                    : "bg-white text-gray-900"
+                }`}
+              >
+                <div className="flex justify-between items-start">
+                  <span className="text-2xl font-bold tracking-tighter">
+                    {blood.type}
+                  </span>
+                  {blood.highlight && (
+                    <Droplet size={12} className="text-red-500 fill-current" />
+                  )}
+                </div>
 
-                  {/* Compatibility Info */}
-                  <div className="p-3 md:p-4 text-xs md:text-sm space-y-2 md:space-y-3">
-                    <div>
-                      <p className="font-bold text-gray-400 uppercase mb-1 text-[10px] md:text-xs">
-                        Can Give To:
-                      </p>
-                      <p className="text-gray-700 leading-snug">
-                        {blood.canGiveTo}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="font-bold text-gray-400 uppercase mb-1 text-[10px] md:text-xs">
-                        Can Receive:
-                      </p>
-                      <p className="text-gray-700 leading-snug">
-                        {blood.canReceiveFrom}
-                      </p>
-                    </div>
+                <div className="space-y-1">
+                  <div className="text-[10px] uppercase opacity-60">
+                    Gives: <b className="opacity-100">{blood.give}</b>
                   </div>
-                </motion.div>
+                  <div className="text-[10px] uppercase opacity-60">
+                    Recv: <b className="opacity-100">{blood.receive}</b>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+
+        {/* --- Split Section: Facts & Eligibility (Dense) --- */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border border-gray-200">
+          {/* Left: Facts */}
+          <div className="bg-red-600 p-8 text-white">
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <Activity className="fill-white" size={20} /> Impact Facts
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {[
+                "Every 2s someone needs blood",
+                "One donation saves 3 lives",
+                "Blood cannot be manufactured",
+                "Only 38% are eligible",
+              ].map((fact, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <span className="text-red-200 font-mono text-xs">
+                    0{i + 1}
+                  </span>
+                  <span className="text-sm font-medium leading-snug">
+                    {fact}
+                  </span>
+                </div>
               ))}
             </div>
           </div>
 
-          {/* Legend */}
-          <div className="border-t border-gray-200 bg-gray-50 p-4 md:p-6">
-            <div className="flex flex-wrap gap-4 md:gap-6 justify-center text-xs md:text-sm">
-              <div className="flex items-center gap-2">
-                <div className="bg-red-600 text-white px-2 py-1 font-bold">
-                  O-
+          {/* Right: Requirements */}
+          <div className="p-8 bg-white">
+            <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+              <Shield size={20} /> Eligibility
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
+              {[
+                "Age: 17+ years",
+                "Weight: 110+ lbs (50kg)",
+                "Good general health",
+                "Wait 56 days between",
+              ].map((req, i) => (
+                <div
+                  key={i}
+                  className="flex items-center gap-2 text-sm text-gray-700"
+                >
+                  <Check className="text-green-600 w-4 h-4" />
+                  <span>{req}</span>
                 </div>
-                <span className="text-gray-600">Universal Donor</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="bg-red-600 text-white px-2 py-1 font-bold">
-                  AB+
-                </div>
-                <span className="text-gray-600">Universal Recipient</span>
-              </div>
+              ))}
             </div>
           </div>
-        </motion.div>
-
-        {/* Quick Facts & Requirements */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
-          {/* Did You Know */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="bg-white border border-gray-200 hover:border-red-600 transition-colors"
-          >
-            <div className="bg-red-600 text-white p-4 md:p-5 border-b border-gray-200">
-              <h3 className="text-base md:text-lg lg:text-xl font-bold uppercase tracking-wide flex items-center gap-2 md:gap-3">
-                <Info size={20} className="md:w-6 md:h-6" />
-                Did You Know?
-              </h3>
-            </div>
-            <div className="p-4 md:p-6 lg:p-8">
-              <ul className="space-y-3 md:space-y-4">
-                {didYouKnow.map((fact, index) => (
-                  <motion.li
-                    key={index}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex items-start gap-3 group/item"
-                  >
-                    <div className="bg-red-600 text-white p-1 mt-0.5 shrink-0">
-                      <ArrowRight size={14} className="md:w-4 md:h-4" />
-                    </div>
-                    <span className="text-gray-700 text-xs md:text-sm lg:text-base group-hover/item:text-black transition-colors">
-                      {fact}
-                    </span>
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-          </motion.div>
-
-          {/* Requirements */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="bg-white border border-gray-200 hover:border-black transition-colors"
-          >
-            <div className="bg-black text-white p-4 md:p-5 border-b border-gray-200">
-              <h3 className="text-base md:text-lg lg:text-xl font-bold uppercase tracking-wide flex items-center gap-2 md:gap-3">
-                <Shield size={20} className="md:w-6 md:h-6" />
-                Requirements to Donate
-              </h3>
-            </div>
-            <div className="p-4 md:p-6 lg:p-8">
-              <ul className="space-y-3 md:space-y-4">
-                {requirements.map((req, index) => (
-                  <motion.li
-                    key={index}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.1 }}
-                    className="flex items-start gap-3 group/item"
-                  >
-                    <div className="bg-black text-white p-1 mt-0.5 shrink-0">
-                      <Check size={14} className="md:w-4 md:h-4" />
-                    </div>
-                    <span className="text-gray-700 text-xs md:text-sm lg:text-base group-hover/item:text-black transition-colors">
-                      {req}
-                    </span>
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-          </motion.div>
         </div>
 
-        {/* Impact Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="mt-8 md:mt-12 lg:mt-16 border-2 border-black/20 p-6 md:p-8 lg:p-12 bg-white"
-        >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            <div className="text-center border-b md:border-b-0 md:border-r border-gray-200 pb-6 md:pb-0">
-              <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-red-600 mb-2">
-                3
+        {/* --- Ultra Compact Stats Strip --- */}
+        <div className="grid grid-cols-4 gap-px bg-gray-200 border-x border-b border-gray-200 mt-0">
+          {[
+            { val: "3", label: "Lives / Unit" },
+            { val: "450", label: "ml / Donation" },
+            { val: "15", label: "Min Process" },
+            { val: "56", label: "Days Rest" },
+          ].map((stat, i) => (
+            <div
+              key={i}
+              className="bg-white p-4 text-center hover:bg-gray-50 transition-colors"
+            >
+              <div className="text-2xl font-light text-black">{stat.val}</div>
+              <div className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                {stat.label}
               </div>
-              <p className="text-xs md:text-sm font-bold text-gray-400 uppercase tracking-wider">
-                Lives Saved Per Donation
-              </p>
             </div>
-            <div className="text-center border-b md:border-b-0 md:border-r border-gray-200 pb-6 md:pb-0">
-              <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-red-600 mb-2">
-                56
-              </div>
-              <p className="text-xs md:text-sm font-bold text-gray-400 uppercase tracking-wider">
-                Days Between Donations
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-red-600 mb-2">
-                38%
-              </div>
-              <p className="text-xs md:text-sm font-bold text-gray-400 uppercase tracking-wider">
-                Eligible Population
-              </p>
-            </div>
-          </div>
-        </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

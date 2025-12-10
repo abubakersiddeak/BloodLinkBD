@@ -14,27 +14,6 @@ import {
 } from "lucide-react";
 
 export default function Hero() {
-  const stats = [
-    {
-      icon: Users,
-      value: "10,000+",
-      label: "Active Donors",
-      color: "text-red-600",
-    },
-    {
-      icon: Heart,
-      value: "5,000+",
-      label: "Lives Saved",
-      color: "text-red-600",
-    },
-    {
-      icon: Clock,
-      value: "24/7",
-      label: "Available",
-      color: "text-red-600",
-    },
-  ];
-
   const features = [
     {
       icon: Shield,
@@ -51,9 +30,9 @@ export default function Hero() {
   ];
 
   return (
-    <main className="bg-white  py-10 md:py-3">
+    <main className="bg-gray-50  py-10 md:py-3">
       {/* Hero Section */}
-      <section className="relative bg-linear-to-b from-red-50/30 via-white to-white py-8 md:py-12 lg:py-20 overflow-hidden">
+      <section className="relative  py-8 md:py-12 lg:py-20 overflow-hidden">
         {/* Background Decoration */}
         <div className="absolute top-0 right-0 w-72 h-72 bg-red-100 rounded-full blur-3xl opacity-20 -z-10" />
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-red-50 rounded-full blur-3xl opacity-30 -z-10" />
@@ -65,7 +44,7 @@ export default function Hero() {
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8 }}
-              className="text-center lg:text-left space-y-6 md:space-y-8 order-2 lg:order-1"
+              className="text-center lg:text-left space-y-6 md:space-y-4 2xl:space-y-6 order-2 lg:order-1"
             >
               {/* Badge */}
               <motion.div
@@ -75,18 +54,18 @@ export default function Hero() {
                 className="inline-flex items-center gap-2 bg-red-100 text-red-700 px-4 py-2 border-l-4 border-red-600"
               >
                 <Droplet size={16} className="fill-current" />
-                <span className="text-sm md:text-base font-bold uppercase tracking-wide">
+                <span className="text-sm 2xl:text-base font-bold uppercase tracking-wide">
                   Save Lives Today
                 </span>
               </motion.div>
 
               {/* Main Heading */}
-              <div className="space-y-3 md:space-y-4">
+              <div className="space-y-3 2xl:space-y-4">
                 <motion.h1
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight"
+                  className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl xl:text-5xl font-bold text-gray-900 leading-tight"
                 >
                   Every Drop of Blood
                   <span className="block mt-2 text-red-600 relative">
@@ -200,41 +179,6 @@ export default function Hero() {
                   />
                 </Link>
               </motion.div>
-
-              {/* Stats Section */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8 }}
-                className="grid grid-cols-3 gap-4 md:gap-6 pt-6 md:pt-8 border-t-2 border-gray-200"
-              >
-                {stats.map((stat, index) => {
-                  const IconComponent = stat.icon;
-                  return (
-                    <div
-                      key={index}
-                      className="text-center lg:text-left group hover:scale-105 transition-transform"
-                    >
-                      <div className="flex items-center justify-center lg:justify-start mb-2">
-                        <div className="bg-red-100 p-2 group-hover:bg-red-600 transition-colors">
-                          <IconComponent
-                            size={20}
-                            className="text-red-600 group-hover:text-white transition-colors"
-                          />
-                        </div>
-                      </div>
-                      <div
-                        className={`text-xl md:text-2xl lg:text-3xl font-bold ${stat.color}`}
-                      >
-                        {stat.value}
-                      </div>
-                      <div className="text-gray-600 text-xs md:text-sm font-medium uppercase tracking-wide">
-                        {stat.label}
-                      </div>
-                    </div>
-                  );
-                })}
-              </motion.div>
             </motion.div>
 
             {/* Right Image Section */}
@@ -252,11 +196,11 @@ export default function Hero() {
                 {/* Main Image Container */}
                 <div className="relative border-8 border-white shadow-2xl bg-white overflow-hidden group">
                   <Image
-                    height={600}
-                    width={600}
+                    height={500}
+                    width={500}
                     src="https://i.ibb.co.com/yBGfjN6r/photo-1615461066159-fea0960485d5.jpg"
                     alt="Blood Donation - Saving Lives"
-                    className="w-full h-64 sm:h-80 md:h-96 lg:h-[450px] xl:h-[550px] object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-54 sm:h-80 md:h-90 lg:h-[350px] xl:h-[400px] 2xl:h-[500px] object-cover group-hover:scale-105 transition-transform duration-500"
                     priority
                   />
 
