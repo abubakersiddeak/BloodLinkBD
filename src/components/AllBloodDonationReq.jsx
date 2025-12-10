@@ -446,7 +446,6 @@ export default function AllBloodDonationReq() {
         </div>
       ) : (
         <>
-          {/* Mobile/Tablet View (Cards) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:hidden gap-4">
             {requests.map((req) => (
               <Card
@@ -500,7 +499,6 @@ export default function AllBloodDonationReq() {
                       Details
                     </Button>
 
-                    {/* ===== MOBILE EDIT BUTTON ===== */}
                     {canEdit(req) && (
                       <Button
                         size="sm"
@@ -512,7 +510,6 @@ export default function AllBloodDonationReq() {
                         <IconEdit className="h-4 w-4" />
                       </Button>
                     )}
-                    {/* ============================== */}
 
                     {canDelete(req) && (
                       <Button
@@ -615,7 +612,6 @@ export default function AllBloodDonationReq() {
                             <IconEye className="h-4 w-4 text-gray-500" />
                           </Button>
 
-                          {/* ===== DESKTOP EDIT BUTTON ===== */}
                           {canEdit(req) && (
                             <Button
                               size="sm"
@@ -627,7 +623,6 @@ export default function AllBloodDonationReq() {
                               <IconEdit className="h-4 w-4" />
                             </Button>
                           )}
-                          {/* =============================== */}
 
                           {canDelete(req) && (
                             <Button

@@ -29,7 +29,12 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
-import { BanknoteArrowDown, CirclePlus, Loader } from "lucide-react";
+import {
+  BanknoteArrowDown,
+  CirclePlus,
+  DollarSign,
+  Loader,
+} from "lucide-react";
 import { NavMain } from "./nav-main";
 import { NavSecondary } from "./nav-secondary";
 import { NavUser } from "./nav-user";
@@ -62,6 +67,11 @@ const data = {
       title: "Create Blood Donation Request",
       url: "/dashboard/volunteer/createBloodDonationRequest",
       icon: CirclePlus,
+    },
+    {
+      title: "Funding Details",
+      url: "/dashboard/volunteer/fundDetails",
+      icon: DollarSign,
     },
 
     // {
