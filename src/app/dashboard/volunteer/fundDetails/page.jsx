@@ -90,7 +90,7 @@ const AdminFundDashboard = () => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency: currency.toUpperCase(),
-    }).format(amount / 100);
+    }).format(amount);
   };
 
   const formatDate = (dateString) => {
@@ -193,7 +193,7 @@ const AdminFundDashboard = () => {
                 <MessageSquare size={16} /> Donor Message
               </h3>
               <div className="bg-white border border-gray-200 p-4 text-gray-600 italic text-sm">
-                "{fund.message || "No message provided."}
+                {fund.message || "No message provided."}
               </div>
             </div>
           </div>
