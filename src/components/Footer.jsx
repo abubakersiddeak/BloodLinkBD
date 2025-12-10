@@ -23,10 +23,9 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   const quickLinks = [
-    { href: "/about", label: "About Us" },
     { href: "/contact", label: "Contact" },
-    { href: "/donate", label: "Donate Blood" },
-    { href: "/search-donors", label: "Find Donors" },
+
+    { href: "/search", label: "Find Donors" },
   ];
 
   const supportLinks = [
@@ -66,12 +65,12 @@ export default function Footer() {
               href="/"
               className="inline-flex items-center gap-2 mb-4 group cursor-pointer"
             >
-              <div className="border border-red-600 text-white  group-hover:bg-black transition-colors">
+              <div className=" text-white  group-hover:bg-black transition-colors">
                 <Image
                   src={"/bloodlinkLogo.webp"}
                   alt="logo"
-                  width={40}
-                  height={40}
+                  width={50}
+                  height={50}
                 />
               </div>
               <span className="text-xl md:text-2xl font-bold text-black uppercase tracking-tight">

@@ -1,4 +1,6 @@
-const { EyeOff, Eye } = require("lucide-react");
+"use client";
+
+import { EyeOff, Eye } from "lucide-react";
 
 export default function FormInput({
   id,
@@ -19,11 +21,13 @@ export default function FormInput({
         {label}
       </label>
       <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          <Icon
-            className={`w-4 h-4 ${error ? "text-red-400" : "text-gray-400"}`}
-          />
-        </div>
+        {Icon && (
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Icon
+              className={`w-4 h-4 ${error ? "text-red-400" : "text-gray-400"}`}
+            />
+          </div>
+        )}
         <input
           type={
             showPasswordToggle ? (showPassword ? "text" : "password") : type

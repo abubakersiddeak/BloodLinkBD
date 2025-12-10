@@ -63,8 +63,8 @@ export default function Navbar() {
               <Image
                 src={"/bloodlinkLogo.webp"}
                 alt="blood logo"
-                height={30}
-                width={30}
+                height={50}
+                width={50}
               />
             </span>
             BloodLink BD
