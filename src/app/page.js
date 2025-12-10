@@ -6,6 +6,7 @@ import WhyDonateBlood from "@/components/WhyDonateBlood";
 import DonationProcess from "@/components/DonationProcess";
 import useAuth from "@/hooks/useAuth";
 import ShowDonationReq from "@/components/ShowDonationReq";
+import Contact from "@/components/Contact";
 
 export default function Home() {
   const { user } = useAuth();
@@ -17,6 +18,7 @@ export default function Home() {
       <ShowDonationReq />
       <WhyDonateBlood />
       <DonationProcess />
+      <Contact />
       <Footer />
     </div>
   );
