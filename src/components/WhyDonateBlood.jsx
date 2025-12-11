@@ -72,7 +72,10 @@ export default function WhyDonateBlood() {
   ];
 
   return (
-    <section className="py-12 bg-white font-sans text-gray-900 border-t border-gray-100">
+    <section
+      id="faq"
+      className="py-12 bg-white font-sans text-gray-900 border-t border-gray-100"
+    >
       <div className="max-w-7xl mx-auto px-3 lg:px-3 2xl:px-0">
         {/* --- Header & 3 Pillars (Combined Compact Grid) --- */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-0 border border-gray-200 mb-8">

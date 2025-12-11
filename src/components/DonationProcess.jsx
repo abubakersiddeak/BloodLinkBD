@@ -53,7 +53,10 @@ export default function DonationProcess() {
   ];
 
   return (
-    <section className="py-12 bg-white font-sans text-gray-900 border-t border-gray-100">
+    <section
+      id="guidelines"
+      className="py-12 bg-white font-sans text-gray-900 border-t border-gray-100"
+    >
       <div className="max-w-7xl mx-auto px-3 lg:px-3 2xl:px-0">
         {/* --- Header --- */}
         <div className="flex flex-col md:flex-row justify-between items-start mb-8 border-b border-gray-200 pb-6">

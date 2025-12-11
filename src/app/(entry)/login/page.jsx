@@ -183,7 +183,7 @@ export default function Page() {
                 </div>
 
                 {/* Remember Me & Forgot Password */}
-                <div className="flex items-center justify-between">
+                {/* <div className="flex items-center justify-between">
                   <label className="flex items-center cursor-pointer">
                     <input
                       type="checkbox"
@@ -247,7 +247,7 @@ export default function Page() {
                   >
                     Forgot password?
                   </button>
-                </div>
+                </div> */}
 
                 {/* Submit Button */}
                 <button

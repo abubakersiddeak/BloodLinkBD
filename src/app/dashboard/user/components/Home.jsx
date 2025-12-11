@@ -15,10 +15,12 @@ import {
   IconArrowRight,
   IconAlertCircle,
   IconBuildingHospital,
+  IconUser,
+  IconMail,
 } from "@tabler/icons-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -44,11 +46,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { PhoneCall } from "lucide-react";
 import server from "@/lib/api";
 import useAuth from "@/hooks/useAuth";
 
-export default function HomePage() {
+export default function DashboardHome() {
   const router = useRouter();
   const { user } = useAuth();
   const [recentRequests, setRecentRequests] = useState([]);
@@ -71,12 +73,12 @@ export default function HomePage() {
       const res = await server.get("/api/bloodDonationReq/myBloodDonationReq", {
         params: { page: 1, limit: 3 },
       });
-
       if (res.data.success) {
         setRecentRequests(res.data.data || []);
       }
     } catch (error) {
       console.error("Failed to fetch requests:", error);
+      toast.error("Failed to load your requests");
     } finally {
       setLoading(false);
     }
@@ -88,9 +90,12 @@ export default function HomePage() {
         `/api/bloodDonationReq/${requestId}/status`,
         { donationStatus: newStatus }
       );
-
       if (res.data.success) {
-        toast.success(`Request marked as ${newStatus}`);
+        toast.success(
+          newStatus === "success"
+            ? "Donation marked as completed!"
+            : "Request canceled"
+        );
         fetchRecentRequests();
       }
     } catch (error) {
@@ -103,7 +108,6 @@ export default function HomePage() {
       const res = await server.delete(
         `/api/bloodDonationReq/${deleteDialog.requestId}`
       );
-
       if (res.data.success) {
         toast.success("Request deleted successfully");
         fetchRecentRequests();
@@ -118,25 +122,29 @@ export default function HomePage() {
   const getStatusBadge = (status) => {
     const config = {
       pending: {
-        className: "bg-amber-100 text-amber-700 border-amber-200",
+        variant: "secondary",
         label: "Pending",
+        color: "text-amber-700 bg-amber-100 border-amber-200",
       },
       "in-progress": {
-        className: "bg-blue-100 text-blue-700 border-blue-200",
+        variant: "default",
         label: "In Progress",
+        color: "text-blue-700 bg-blue-100 border-blue-200",
       },
       success: {
-        className: "bg-emerald-100 text-emerald-700 border-emerald-200",
+        variant: "default",
         label: "Completed",
+        color: "text-emerald-700 bg-emerald-100 border-emerald-200",
       },
       cancel: {
-        className: "bg-rose-100 text-rose-700 border-rose-200",
+        variant: "destructive",
         label: "Canceled",
+        color: "text-rose-700 bg-rose-100 border-rose-200",
       },
     };
     const style = config[status] || config.pending;
     return (
-      <Badge variant="outline" className={`${style.className} font-medium`}>
+      <Badge variant="outline" className={`${style.color} font-medium border`}>
         {style.label}
       </Badge>
     );
@@ -144,178 +152,175 @@ export default function HomePage() {
 
   if (!user || loading) {
     return (
-      <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-red-600"></div>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-red-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="w-full space-y-6 py-6 md:py-8">
-      {/* Header Section */}
-      <div className="flex items-center justify-between px-4 md:px-0">
-        <h2 className="text-2xl font-bold flex items-center gap-2 text-gray-800">
-          <IconDroplet className="text-red-600 fill-current" />
-          My Recent Requests
-        </h2>
-        {recentRequests.length > 0 && (
-          <Button
-            variant="outline"
-            onClick={() => router.push("/dashboard/user/allDonationRequest")}
-            className="hidden md:flex cursor-pointer"
-          >
-            View All <IconArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        )}
-      </div>
-
-      {recentRequests.length === 0 ? (
-        // Empty State
-        <Card className="mx-4 md:mx-0 bg-gray-50 border-dashed">
-          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="bg-white p-4 rounded-full shadow-sm mb-4">
-              <IconDroplet className="h-8 w-8 text-gray-400" />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900">
-              No requests found
-            </h3>
-            <p className="text-sm text-gray-500 max-w-sm mt-1 mb-6">
-              You haven't created any blood donation requests yet.
-            </p>
-            <Button
-              onClick={() =>
-                router.push("/dashboard/user/createBloodDonationRequest")
-              }
-              className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
-            >
-              Create Request
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
+    <div className="w-full space-y-10 py-8 md:py-12 max-w-7xl mx-auto px-4 md:px-0">
+      {/* Recent Requests Section */}
+      {recentRequests.length > 0 && (
         <>
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold flex items-center gap-3 text-gray-800">
+              <IconDroplet className="text-red-600 fill-current" size={32} />
+              My Recent Requests
+            </h2>
+          </div>
+
           {/* Desktop Table View */}
-          <div className="hidden md:block bg-white rounded-lg border shadow-sm overflow-hidden mx-4 md:mx-0">
+          <div className="hidden md:block bg-white rounded-xl border shadow-sm overflow-hidden">
             <Table>
-              <TableHeader className="bg-gray-50/50">
+              <TableHeader className="bg-gray-50">
                 <TableRow>
-                  <TableHead>Recipient Info</TableHead>
+                  <TableHead>Recipient</TableHead>
                   <TableHead>Location</TableHead>
                   <TableHead>Blood Group</TableHead>
-                  <TableHead>Date Needed</TableHead>
+                  <TableHead>Date & Time</TableHead>
                   <TableHead>Status</TableHead>
+                  <TableHead>Donor Info</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {recentRequests.map((req) => (
                   <TableRow key={req._id} className="hover:bg-gray-50">
-                    <TableCell>
-                      <div className="font-semibold">{req.recipientName}</div>
-                      <div className="text-xs text-gray-500 flex items-center gap-1">
-                        <IconBuildingHospital className="h-3 w-3" />{" "}
-                        {req.hospitalName}
+                    <TableCell className="font-medium">
+                      <div>{req.recipientName}</div>
+                      <div className="text-xs text-gray-500 flex items-center gap-1 mt-1">
+                        <IconBuildingHospital size={14} /> {req.hospitalName}
                       </div>
                     </TableCell>
                     <TableCell>
-                      <div className="text-sm">
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <IconMapPin size={16} />
                         {req.fullAddress?.upazila}, {req.fullAddress?.district}
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge className="bg-red-600 hover:bg-red-700">
+                      <Badge className="bg-red-600 text-white font-bold">
                         {req.bloodGroup}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <div className="text-sm">{req.donationDate}</div>
-                      <div className="text-xs text-gray-500">
-                        {req.donationTime}
+                      <div className="flex items-center gap-2">
+                        <IconCalendar size={16} />
+                        <span>
+                          {new Date(req.donationDate).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <div className="text-sm text-gray-500 flex items-center gap-2 mt-1">
+                        <IconClock size={14} /> {req.donationTime}
                       </div>
                     </TableCell>
                     <TableCell>{getStatusBadge(req.donationStatus)}</TableCell>
+
+                    {/* --- UPDATED DONOR INFO LOGIC (Desktop) --- */}
+                    <TableCell>
+                      {(req.donationStatus === "in-progress" ||
+                        req.donationStatus === "success") &&
+                      req.donorId ? (
+                        <div className="text-sm space-y-1">
+                          <div className="flex items-center gap-2">
+                            <IconUser
+                              size={14}
+                              className={
+                                req.donationStatus === "success"
+                                  ? "text-green-600"
+                                  : "text-blue-600"
+                              }
+                            />
+                            <span className="font-medium">
+                              {req.donorId.name}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <PhoneCall size={14} />
+                            <span>{req.donorId.phone}</span>
+                          </div>
+                        </div>
+                      ) : (
+                        <span className="text-gray-400 text-sm">—</span>
+                      )}
+                    </TableCell>
+                    {/* ------------------------------------------- */}
+
                     <TableCell className="text-right">
-                      {/* Action Buttons Group */}
                       <div className="flex items-center justify-end gap-2">
                         <Button
                           variant="ghost"
-                          size="icon"
+                          size="sm"
                           onClick={() =>
                             router.push(
                               `/dashboard/bloodDonation-req/${req._id}`
                             )
                           }
+                          className="cursor-pointer text-gray-600 hover:text-gray-900"
                           title="View Details"
-                          className="cursor-pointer"
                         >
-                          <IconEye className="h-4 w-4 text-gray-600" />
+                          <IconEye size={18} />
                         </Button>
 
                         {req.donationStatus === "pending" && (
                           <Button
                             variant="ghost"
-                            size="icon"
+                            size="sm"
                             onClick={() =>
                               router.push(
                                 `/dashboard/bloodDonation-req/${req._id}/edit`
                               )
                             }
-                            title="Edit"
-                            className="cursor-pointer"
+                            className="text-blue-600 cursor-pointer hover:bg-blue-50"
+                            title="Edit Request"
                           >
-                            <IconEdit className="h-4 w-4 text-blue-600" />
+                            <IconEdit size={18} />
                           </Button>
                         )}
 
-                        {req.donationStatus === "in-progress" ? (
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="cursor-pointer"
-                              >
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  handleStatusChange(req._id, "success")
-                                }
-                                className="text-green-600 cursor-pointer"
-                              >
-                                <IconCheck className="mr-2 h-4 w-4" /> Mark
-                                Completed
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  handleStatusChange(req._id, "cancel")
-                                }
-                                className="text-red-600 cursor-pointer"
-                              >
-                                <IconX className="mr-2 h-4 w-4" /> Cancel
-                                Request
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        ) : (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() =>
-                              setDeleteDialog({
-                                open: true,
-                                requestId: req._id,
-                                requestName: req.recipientName,
-                              })
-                            }
-                            title="Delete"
-                            className="cursor-pointer"
-                          >
-                            <IconTrash className="h-4 w-4 text-red-600" />
-                          </Button>
+                        {req.donationStatus === "in-progress" && (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                handleStatusChange(req._id, "success")
+                              }
+                              className="text-green-600 cursor-pointer hover:bg-green-50"
+                              title="Mark as Completed"
+                            >
+                              <IconCheck size={18} />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() =>
+                                handleStatusChange(req._id, "cancel")
+                              }
+                              className="text-amber-600 cursor-pointer hover:bg-amber-50"
+                              title="Cancel Request"
+                            >
+                              <IconX size={18} />
+                            </Button>
+                          </>
                         )}
+
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            setDeleteDialog({
+                              open: true,
+                              requestId: req._id,
+                              requestName: req.recipientName,
+                            })
+                          }
+                          className="text-red-600 cursor-pointer hover:bg-red-50"
+                          title="Delete Request"
+                        >
+                          <IconTrash size={18} />
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -324,134 +329,171 @@ export default function HomePage() {
             </Table>
           </div>
 
-          {/* Mobile Card View (Grid) */}
-          <div className="grid grid-cols-1 gap-4 md:hidden px-4">
+          {/* Mobile Card View */}
+          <div className="grid grid-cols-1 gap-6 md:hidden">
             {recentRequests.map((req) => (
-              <Card key={req._id} className="border shadow-sm overflow-hidden">
-                <div className="flex items-center justify-between p-4 bg-gray-50/50 border-b">
-                  <div className="flex items-center gap-2">
-                    <Badge className="bg-red-600 text-white font-bold h-8 w-8 flex items-center justify-center rounded-full p-0">
+              <Card key={req._id} className="overflow-hidden border shadow-md">
+                <div className="bg-linear-to-r from-red-50 to-red-100 p-4 border-b">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h3 className="font-bold text-lg">{req.recipientName}</h3>
+                      <p className="text-sm text-gray-600 flex items-center gap-2 mt-1">
+                        <IconMapPin size={16} />
+                        {req.fullAddress?.upazila}, {req.fullAddress?.district}
+                      </p>
+                    </div>
+                    <Badge className="bg-red-600 text-white text-lg font-bold px-4">
                       {req.bloodGroup}
                     </Badge>
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-sm text-gray-900">
-                        {req.recipientName}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {req.donationDate}
-                      </span>
-                    </div>
                   </div>
-                  {getStatusBadge(req.donationStatus)}
                 </div>
 
-                <CardContent className="p-4 space-y-3">
-                  <div className="space-y-2 text-sm text-gray-600">
-                    <div className="flex items-start gap-2">
-                      <IconBuildingHospital className="h-4 w-4 mt-0.5 text-red-500" />
-                      <span className="flex-1">{req.hospitalName}</span>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <IconMapPin className="h-4 w-4 mt-0.5 text-red-500" />
-                      <span className="flex-1">
-                        {req.fullAddress?.district || "Location N/A"},{" "}
-                        {req.fullAddress?.upazila}
+                <CardContent className="p-5 space-y-4">
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <IconCalendar className="text-red-600" size={18} />
+                      <span>
+                        {new Date(req.donationDate).toLocaleDateString()}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <IconClock className="h-4 w-4 text-red-500" />
+                      <IconClock className="text-red-600" size={18} />
                       <span>{req.donationTime}</span>
                     </div>
                   </div>
 
-                  {/* Mobile Actions */}
-                  <div className="pt-3 flex items-center gap-2 border-t mt-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Status:</span>
+                    {getStatusBadge(req.donationStatus)}
+                  </div>
+
+                  {/* --- UPDATED DONOR INFO LOGIC (Mobile) --- */}
+                  {(req.donationStatus === "in-progress" ||
+                    req.donationStatus === "success") &&
+                    req.donorId && (
+                      <div
+                        className={`border rounded-lg p-4 ${
+                          req.donationStatus === "success"
+                            ? "bg-green-50 border-green-200"
+                            : "bg-blue-50 border-blue-200"
+                        }`}
+                      >
+                        <p
+                          className={`font-semibold mb-2 ${
+                            req.donationStatus === "success"
+                              ? "text-green-900"
+                              : "text-blue-900"
+                          }`}
+                        >
+                          {req.donationStatus === "success"
+                            ? "Donated By"
+                            : "Donor Accepted"}
+                        </p>
+                        <div className="space-y-1 text-sm">
+                          <p className="flex items-center gap-2">
+                            <IconUser size={16} /> {req.donorId.name}
+                          </p>
+                          <p className="flex items-center gap-2 text-gray-700">
+                            <IconMail size={16} /> {req.donorId.email}
+                          </p>
+                          <a
+                            href={`tel:${req.donorId.phone}`}
+                            className={`flex items-center gap-2 font-medium pt-1 ${
+                              req.donationStatus === "success"
+                                ? "text-green-700"
+                                : "text-blue-700"
+                            }`}
+                          >
+                            <PhoneCall size={16} /> {req.donorId.phone}
+                          </a>
+                        </div>
+                      </div>
+                    )}
+                  {/* ------------------------------------------- */}
+
+                  <div className="flex gap-3 pt-3 border-t overflow-x-auto">
                     <Button
                       variant="outline"
-                      size="sm"
-                      className="flex-1 cursor-pointer"
+                      className="flex-1 cursor-pointer min-w-[80px]"
                       onClick={() =>
                         router.push(`/dashboard/bloodDonation-req/${req._id}`)
                       }
                     >
-                      View
+                      <IconEye className="mr-2" size={16} /> View
                     </Button>
 
                     {req.donationStatus === "pending" && (
                       <Button
                         variant="outline"
-                        size="sm"
-                        className="flex-1 text-blue-600 border-blue-200 bg-blue-50 cursor-pointer"
+                        className="flex-1 cursor-pointer text-blue-600 border-blue-300 min-w-[80px]"
                         onClick={() =>
                           router.push(
                             `/dashboard/bloodDonation-req/${req._id}/edit`
                           )
                         }
                       >
-                        Edit
+                        <IconEdit className="mr-2" size={16} /> Edit
                       </Button>
                     )}
 
-                    {req.donationStatus === "in-progress" ? (
+                    {req.donationStatus === "in-progress" && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button
                             variant="outline"
-                            size="sm"
-                            className="flex-1 cursor-pointer"
+                            className="flex-1 cursor-pointer border-blue-300 bg-blue-50 text-blue-700 min-w-[90px]"
                           >
-                            Manage
+                            Update
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuContent>
                           <DropdownMenuItem
-                            className="cursor-pointer"
                             onClick={() =>
                               handleStatusChange(req._id, "success")
                             }
+                            className="text-green-600 cursor-pointer"
                           >
-                            <IconCheck className="mr-2 h-4 w-4 text-green-600" />{" "}
-                            Mark Done
+                            <IconCheck className="mr-2" size={16} /> Mark Done
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            className="cursor-pointer"
                             onClick={() =>
                               handleStatusChange(req._id, "cancel")
                             }
+                            className="text-amber-600 cursor-pointer"
                           >
-                            <IconX className="mr-2 h-4 w-4 text-red-600" />{" "}
-                            Cancel
+                            <IconX className="mr-2" size={16} /> Cancel
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
-                    ) : (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="cursor-pointer flex-0 px-3 text-red-600 border-red-200 bg-red-50"
-                        onClick={() =>
-                          setDeleteDialog({
-                            open: true,
-                            requestId: req._id,
-                            requestName: req.recipientName,
-                          })
-                        }
-                      >
-                        <IconTrash className="h-4 w-4" />
-                      </Button>
                     )}
+
+                    <Button
+                      variant="outline"
+                      className="px-4 cursor-pointer text-red-600 border-red-300 hover:bg-red-50"
+                      onClick={() =>
+                        setDeleteDialog({
+                          open: true,
+                          requestId: req._id,
+                          requestName: req.recipientName,
+                        })
+                      }
+                    >
+                      <IconTrash size={18} />
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
             ))}
+          </div>
 
-            {/* View All Button Mobile */}
+          <div className="text-center mt-10">
             <Button
-              variant="ghost"
-              className="w-full mt-2 text-gray-500 cursor-pointer"
+              size="lg"
               onClick={() => router.push("/dashboard/user/allDonationRequest")}
+              className="bg-red-600 hover:bg-red-700 text-white cursor-pointer"
             >
-              View All Requests <IconArrowRight className="ml-2 h-4 w-4" />
+              View My All Requests
+              <IconArrowRight className="ml-2" size={20} />
             </Button>
           </div>
         </>
@@ -462,27 +504,28 @@ export default function HomePage() {
         open={deleteDialog.open}
         onOpenChange={(open) => setDeleteDialog((prev) => ({ ...prev, open }))}
       >
-        <AlertDialogContent className="max-w-[90%] md:max-w-lg rounded-xl">
+        <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2 text-red-600">
-              <IconAlertCircle className="h-5 w-5" />
-              Delete Request?
+              <IconAlertCircle size={24} />
+              Delete Blood Donation Request?
             </AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to delete the request for{" "}
-              <strong>{deleteDialog.requestName}</strong>? This cannot be
-              undone.
+              <strong>{deleteDialog.requestName}</strong>?
+              <br />
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex-row gap-2 justify-end">
-            <AlertDialogCancel className="mt-0 flex-1 md:flex-none cursor-pointer">
+          <AlertDialogFooter>
+            <AlertDialogCancel className="cursor-pointer">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-red-600 hover:bg-red-700 flex-1 md:flex-none cursor-pointer"
+              className="bg-red-600 hover:bg-red-700 cursor-pointer"
             >
-              Delete
+              Delete Request
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

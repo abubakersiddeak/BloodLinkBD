@@ -42,9 +42,9 @@ import Link from "next/link";
 
 const data = {
   user: {
-    name: "Admin",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "User",
+    // email: "m@example.com",
+    // avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
     {
@@ -129,11 +129,11 @@ const data = {
     },
   ],
   navSecondary: [
-    {
-      title: "Settings",
-      url: "/profile",
-      icon: IconSettings,
-    },
+    // {
+    //   title: "Settings",
+    //   url: "/profile",
+    //   icon: IconSettings,
+    // },
     // {
     //   title: "Get Help",
     //   url: "#",
@@ -146,21 +146,21 @@ const data = {
     // },
   ],
   documents: [
-    {
-      name: "Data Library",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Reports",
-      url: "#",
-      icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
-    },
+    // {
+    //   name: "Data Library",
+    //   url: "#",
+    //   icon: IconDatabase,
+    // },
+    // {
+    //   name: "Reports",
+    //   url: "#",
+    //   icon: IconReport,
+    // },
+    // {
+    //   name: "Word Assistant",
+    //   url: "#",
+    //   icon: IconFileWord,
+    // },
   ],
 };
 

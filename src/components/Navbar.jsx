@@ -82,7 +82,7 @@ export default function Navbar() {
               href="/donation-requests"
               className="text-gray-600 hover:text-red-500 lg:px-3 py-2"
             >
-              Donation Requests
+              All Requests
             </Link>
             <Link
               href="/search"
@@ -210,7 +210,7 @@ export default function Navbar() {
               className="block px-4 py-2 text-gray-600 hover:bg-gray-50"
               onClick={() => setIsMenuOpen(false)}
             >
-              Donation Requests
+              All Requests
             </Link>
             <Link
               href="/search"

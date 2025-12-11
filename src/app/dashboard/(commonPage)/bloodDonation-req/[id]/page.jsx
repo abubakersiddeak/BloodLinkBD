@@ -18,6 +18,8 @@ import {
   IconAlertCircle,
   IconCheck,
   IconLoader2,
+  IconHeartHandshake,
+  IconUserCheck,
 } from "@tabler/icons-react";
 import Swal from "sweetalert2";
 import { Button } from "@/components/ui/button";
@@ -187,6 +189,7 @@ export default function BloodDonationRequestDetailsPage() {
   useEffect(() => {
     fetchRequestDetails();
   }, [fetchRequestDetails]);
+  console.log(request);
 
   // Handle status change
   const handleStatusChange = async (newStatus) => {
@@ -385,7 +388,7 @@ export default function BloodDonationRequestDetailsPage() {
           {/* Left Column - Main Info */}
           <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Recipient Card */}
-            <Card className="shadow-lg  hover:shadow-xl transition-shadow">
+            <Card className="shadow-lg hover:shadow-xl transition-shadow">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex flex-col sm:flex-row items-start gap-4 mb-6">
                   {/* Blood Group Badge */}
@@ -430,6 +433,154 @@ export default function BloodDonationRequestDetailsPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {request.donorId &&
+              (request.donationStatus === "in-progress" ||
+                request.donationStatus === "success") && (
+                <Card className="shadow-lg hover:shadow-xl transition-shadow border-2 border-emerald-200 bg-linear-to-br from-emerald-50 to-white">
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex items-center gap-3 mb-5 pb-4 border-b border-emerald-200">
+                      <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center shadow-md">
+                        <IconHeartHandshake className="h-6 w-6 text-white" />
+                      </div>
+                      <div>
+                        <h3 className="font-bold text-gray-900 text-lg flex items-center gap-2">
+                          Donor Information
+                          <IconUserCheck className="h-5 w-5 text-emerald-600" />
+                        </h3>
+                        <p className="text-xs text-emerald-700 font-medium">
+                          {request.donationStatus === "success"
+                            ? "Completed Donation"
+                            : "Accepted Your Request"}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4">
+                      {/* Donor Details Grid */}
+                      <div className="grid sm:grid-cols-2 gap-3">
+                        <div className="bg-white rounded-lg p-4 border border-emerald-100">
+                          <p className="text-xs text-gray-500 mb-1.5 uppercase tracking-wide flex items-center gap-1">
+                            <IconUser className="h-3 w-3" />
+                            Donor Name
+                          </p>
+                          <p className="font-bold text-gray-900 text-base">
+                            {request.donorId.name || "N/A"}
+                          </p>
+                        </div>
+
+                        {request.donorId.bloodGroup && (
+                          <div className="bg-white rounded-lg p-4 border border-emerald-100">
+                            <p className="text-xs text-gray-500 mb-1.5 uppercase tracking-wide flex items-center gap-1">
+                              <IconDroplet className="h-3 w-3" />
+                              Blood Group
+                            </p>
+                            <p className="font-bold text-rose-600 text-xl">
+                              {request.donorId.bloodGroup}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Contact Info */}
+                      <div className="space-y-3">
+                        {request.donorId.phone && (
+                          <InfoCard
+                            icon={IconPhone}
+                            label="Donor Phone"
+                            value={request.donorId.phone}
+                            href={`tel:${request.donorId.phone}`}
+                          />
+                        )}
+
+                        {request.donorId.email && (
+                          <InfoCard
+                            icon={IconMail}
+                            label="Donor Email"
+                            value={request.donorId.email}
+                            href={`mailto:${request.donorId.email}`}
+                            isEmail
+                          />
+                        )}
+
+                        {request.donorId.address && (
+                          <div className="flex items-start gap-3 p-3 bg-white rounded-lg border border-emerald-100">
+                            <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0">
+                              <IconMapPin className="h-5 w-5 text-emerald-600" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="text-xs text-gray-500 mb-0.5">
+                                Donor Address
+                              </p>
+                              <p className="font-semibold text-gray-900 text-sm">
+                                {typeof request.donorId.address === "object"
+                                  ? `${
+                                      request.donorId.address.district || ""
+                                    }, ${request.donorId.address.upazila || ""}`
+                                  : request.donorId.address}
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Quick Contact Actions */}
+                      <div className="grid grid-cols-2 gap-2 pt-4 border-t border-emerald-200">
+                        {request.donorId.phone && (
+                          <a
+                            href={`tel:${request.donorId.phone}`}
+                            className="block"
+                          >
+                            <Button
+                              className="w-full bg-emerald-600 hover:bg-emerald-700 cursor-pointer shadow-sm"
+                              size="sm"
+                            >
+                              <IconPhone className="h-4 w-4 mr-1.5" />
+                              Call Donor
+                            </Button>
+                          </a>
+                        )}
+                        {request.donorId.email && (
+                          <a
+                            href={`mailto:${request.donorId.email}`}
+                            className="block"
+                          >
+                            <Button
+                              variant="outline"
+                              className="w-full cursor-pointer hover:bg-emerald-50 border-emerald-300"
+                              size="sm"
+                            >
+                              <IconMail className="h-4 w-4 mr-1.5" />
+                              Email
+                            </Button>
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+            {/* Pending Status Message */}
+            {request.donationStatus === "pending" && (
+              <Card className="shadow-lg hover:shadow-xl transition-shadow border-2 border-amber-200 bg-linear-to-br from-amber-50 to-white">
+                <CardContent className="p-4 sm:p-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                      <IconClock className="h-6 w-6 text-amber-600 animate-pulse" />
+                    </div>
+                    <div>
+                      <p className="font-bold text-gray-900 text-base">
+                        Waiting for Donor
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        No donor has accepted this request yet
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Hospital Information */}
             <Card className="shadow-lg hover:shadow-xl transition-shadow">
@@ -512,7 +663,7 @@ export default function BloodDonationRequestDetailsPage() {
           {/* Right Column - Contact & Status */}
           <div className="space-y-4 sm:space-y-6 z-40">
             {/* Contact Information */}
-            <Card className="shadow-lg  lg:top-6 hover:shadow-xl transition-shadow">
+            <Card className="shadow-lg lg:top-6 hover:shadow-xl transition-shadow">
               <CardContent className="p-4 sm:p-6">
                 <div className="flex items-center gap-3 mb-5 pb-4 border-b">
                   <div className="w-10 h-10 bg-rose-50 rounded-xl flex items-center justify-center">
@@ -599,8 +750,8 @@ export default function BloodDonationRequestDetailsPage() {
                           key={key}
                           className={`justify-center cursor-pointer transition-all ${
                             isActive
-                              ? `${config.bg} ${config.text} ${config.border}  ring-2 ring-offset-1`
-                              : `${config.bg} ${config.text}  hover:ring-2 hover:ring-offset-1`
+                              ? `${config.bg} ${config.text} ${config.border} ring-2 ring-offset-1`
+                              : `${config.bg} ${config.text} hover:ring-2 hover:ring-offset-1`
                           } ${config.border}`}
                           variant="outline"
                           size="sm"

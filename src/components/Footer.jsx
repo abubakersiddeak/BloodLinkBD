@@ -23,16 +23,15 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   const quickLinks = [
-    { href: "/contact", label: "Contact" },
+    { href: "#contact", label: "Contact" },
 
     { href: "/search", label: "Find Donors" },
   ];
 
   const supportLinks = [
-    { href: "/faq", label: "FAQ" },
-    { href: "/privacy", label: "Privacy Policy" },
-    { href: "/terms", label: "Terms of Service" },
-    { href: "/guidelines", label: "Donation Guidelines" },
+    { href: "#faq", label: "FAQ" },
+
+    { href: "#guidelines", label: "Donation Guidelines" },
   ];
 
   const socialLinks = [
