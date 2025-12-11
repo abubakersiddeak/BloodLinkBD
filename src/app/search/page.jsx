@@ -167,7 +167,7 @@ export default function SearchPage() {
   return (
     <div>
       <Navbar />
-      <section className="bg-white min-h-screen py-12 md:py-20">
+      <section className="bg-white min-h-screen py-20 ">
         <div className="max-w-7xl px-4 2xl:px-0 mx-auto">
           {/* --- Header & Search Section --- */}
           <div className="mb-12 space-y-8">

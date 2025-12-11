@@ -7,7 +7,9 @@ export default function page() {
   return (
     <div>
       <Navbar />
-      <ShowDonationReq />
+      <div className="py-10">
+        <ShowDonationReq />
+      </div>
       <Footer />
     </div>
   );
