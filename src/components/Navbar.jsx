@@ -141,14 +141,14 @@ export default function Navbar() {
                         <LayoutDashboard className="w-4 h-4" />
                         Dashboard
                       </Link>
-                      <Link
+                      {/* <Link
                         href="/profile"
                         className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                         onClick={() => setIsDropdownOpen(false)}
                       >
                         <User className="w-4 h-4" />
                         Profile
-                      </Link>
+                      </Link> */}
                       <button
                         onClick={handleLogout}
                         className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 cursor-pointer border-t border-gray-200"
@@ -250,14 +250,14 @@ export default function Navbar() {
                   <LayoutDashboard className="w-4 h-4" />
                   Dashboard
                 </Link>
-                <Link
+                {/* <Link
                   href="/profile"
                   className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-50"
                   onClick={() => setIsMenuOpen(false)}
                 >
                   <User className="w-4 h-4" />
                   Profile
-                </Link>
+                </Link> */}
                 <button
                   onClick={() => {
                     setIsMenuOpen(false);
